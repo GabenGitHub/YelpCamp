@@ -31,15 +31,13 @@ app.get('/campgrounds', (req, res) => {
 
 // Save camps to database
 app.post('/campgrounds', (req, res) => {
-    const {name, image, description} = req.body;
-    var newCampground = new Campground({
-        name,
-        image,
-        description
+    Campground.create(req.body)
+    .then(() => {
+        res.redirect('/campgrounds');
+    })
+    .catch(err => {
+        console.log(err);
     });
-
-    newCampground.save();
-    res.redirect('/campgrounds');
 });
 
 app.get('/campgrounds/new', (req, res) => {
