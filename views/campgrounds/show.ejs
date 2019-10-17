@@ -1,0 +1,21 @@
+<% include ../partials/header %>
+
+<h1>This is the show template</h1>
+
+<p> <%= campground.name %> </p>
+
+<img src="<%= campground.image %>" alt="">
+
+<p> <%= campground.description %></p>
+
+<p>
+    <a class="btn btn-success" href="/campgrounds/<%= campground._id %>/comments/new">Add New Comment</a>
+</p>
+
+<h1>Comments</h1>
+<% campground.comments.forEach(el => { %>
+    <p><strong><%= el.author %></strong> - <%= el.text %></p>
+<% }); %>
+
+
+<% include ../partials/footer %>

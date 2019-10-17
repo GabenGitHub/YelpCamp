@@ -2,10 +2,13 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const seedDB = require('./seeds');
 
 const db = require('./config/keys').mongoURI;
 
+seedDB();
 const Campground = require('./models/camps');
+const Comment = require('./models/comments');
 
 mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true})
     .then(() => console.log('MongoDB Connected...'))
@@ -22,9 +25,8 @@ app.get('/', (req, res) => {
 app.get('/campgrounds', (req, res) => {
     Campground.find({})
     .then(allCampgrounds => {
-        res.render('index', {camps: allCampgrounds});
-    })
-    .catch(err => {
+        res.render('./campgrounds/index', {camps: allCampgrounds});
+    }).catch(err => {
         console.log(err);
     })
 });
@@ -34,8 +36,7 @@ app.post('/campgrounds', (req, res) => {
     Campground.create(req.body)
     .then(() => {
         res.redirect('/campgrounds');
-    })
-    .catch(err => {
+    }).catch(err => {
         console.log(err);
     });
 });
@@ -46,13 +47,39 @@ app.get('/campgrounds/new', (req, res) => {
 
 app.get('/campgrounds/:id', (req, res) => {
     // find the campground with the provided id
-    Campground.findById(req.params.id, (err, foundCampground) => {
-        if(err) {
-            console.log(err);
-        } else {
-            res.render('show', {campground: foundCampground});
-        }
+    Campground.findById(req.params.id).populate('comments').exec()
+    .then((foundCampground) => {
+        res.render('campgrounds/show', {campground: foundCampground});
+    }).catch(err => {
+        console.log(err);
     })
+});
+
+// Comment routs
+
+app.get('/campgrounds/:id/comments/new', (req, res) => {
+    Campground.findById(req.params.id)
+    .then(foundCampground => {
+        res.render('comments/new', {campground: foundCampground});
+    }).catch(err => {
+        console.log(err);
+    });
+});
+
+app.post('/campgrounds/:id/comments', (req, res) => {
+    Campground.findById(req.params.id)
+    .then((campground) => {
+        Comment.create(req.body)
+        .then(comment => {
+            campground.comments.push(comment);
+            campground.save();
+            res.redirect('/campgrounds/' + campground._id);
+        }).catch(err => {
+            console.log(err);
+        });
+    }).catch(err => {
+        console.log(err);
+    });
 });
 
 app.listen(4000, () => {
