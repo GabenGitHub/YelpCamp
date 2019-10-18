@@ -6,17 +6,17 @@ const data = [
     {
         name: "Test camp 1",
         image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXfcHLNKn-30jXCgR-dOhrwzB8OGs05lwBh7wbQPC14OOrid4vGw",
-        description: "This is a description of the campground 1"
+        description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint dicta corporis iusto incidunt reiciendis maxime at cumque aliquam consectetur. Iste expedita consequuntur, reiciendis quam quasi mollitia aut, laudantium ut, molestias porro eveniet dolorum maiores totam optio cupiditate. Dolores neque officiis odio, doloribus pariatur impedit beatae similique molestias quisquam id numquam?"
     },
     {
         name: "Test camp 2",
         image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxvDWXBRA6Caz55j7BTQSTMg1Mn7b13-KWezRXur-gPmwkTezmgQ",
-        description: "This is a description of the campground 2"
+        description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint dicta corporis iusto incidunt reiciendis maxime at cumque aliquam consectetur. Iste expedita consequuntur, reiciendis quam quasi mollitia aut, laudantium ut, molestias porro eveniet dolorum maiores totam optio cupiditate. Dolores neque officiis odio, doloribus pariatur impedit beatae similique molestias quisquam id numquam?"
     },
     {
         name: "Test camp 3",
         image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQg-7CsEF9-GlH-dVhJbHjt2T-7ioWiGNqikRxD4Pt39hT65eg_",
-        description: "This is a description of the campground 3"
+        description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint dicta corporis iusto incidunt reiciendis maxime at cumque aliquam consectetur. Iste expedita consequuntur, reiciendis quam quasi mollitia aut, laudantium ut, molestias porro eveniet dolorum maiores totam optio cupiditate. Dolores neque officiis odio, doloribus pariatur impedit beatae similique molestias quisquam id numquam?"
     }
 ];
 

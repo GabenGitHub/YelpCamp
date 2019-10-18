@@ -16,6 +16,9 @@ mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true})
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.set('view engine', 'ejs');
+app.use(express.static(__dirname + '/public'));
+
+// Routes
 
 app.get('/', (req, res) => {
     res.render('landing');
@@ -55,7 +58,7 @@ app.get('/campgrounds/:id', (req, res) => {
     })
 });
 
-// Comment routs
+// Comment routes
 
 app.get('/campgrounds/:id/comments/new', (req, res) => {
     Campground.findById(req.params.id)
