@@ -1,22 +1,10 @@
 const mongoose = require('mongoose');
 
 const campgroundSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true
-    },
-    image: {
-        type: String,
-        required: true
-    },
-    description: {
-        type: String,
-        required: true
-    },
-    date: {
-        type: Date,
-        default: Date.now
-    },
+    name:           { type: String, required: true },
+    image:          { type: String, required: true },
+    description:    { type: String, required: true },
+    date:           { type: Date, default: Date.now },
     comments: [
         {
             type: mongoose.Schema.Types.ObjectId,
@@ -25,6 +13,4 @@ const campgroundSchema = new mongoose.Schema({
     ]
 });
 
-const Campground = mongoose.model('Campground', campgroundSchema);
-
-module.exports = Campground;
+module.exports = mongoose.model('Campground', campgroundSchema);

@@ -22,6 +22,11 @@ const data = [
 
 function seedDB() {
     //! Remove all campgrounds
+    Comment.deleteMany({}).then(() => {
+        console.log('deleted comments');
+    }).catch(err => {
+        console.log(err);
+    });
     Campground.deleteMany({}).then(() => {
         console.log('Database removed');
         //TODO: Add a few campgrounds
