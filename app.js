@@ -16,7 +16,7 @@ const database = require('./config/keys').mongoURI;
 
 // Database
 mongoose.set('useCreateIndex', true);
-seedDB();
+// seedDB();
 const User = require('./models/users');
 
 mongoose.connect(database, { useNewUrlParser: true, useUnifiedTopology: true })
