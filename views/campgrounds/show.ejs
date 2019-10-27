@@ -21,6 +21,10 @@
                         <em>Created by: <%= campground.author.firstName %> <%= campground.author.lastName %></em>
                         <em class="float-right"><%= campground.date %></em>
                     </p>
+                    <a class="btn btn-sm btn-warning" href="/campgrounds/<%= campground._id %>/edit">Edit</a>
+                    <form id="delete-form" action="/campgrounds/<%= campground._id %>?_method=DELETE" method="post">
+                        <button class="btn btn-sm btn-danger">Delete</button>
+                    </form>
                 </div>
             </div>
             <br>

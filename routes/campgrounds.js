@@ -33,7 +33,7 @@ router.post('/', loginRequire, (req, res) => {
         author: authorObj
     }
     Campground.create(newCampground)
-        .then((campground) => {
+        .then(campground => {
             campground.save();
             res.redirect('/campgrounds');
         }).catch(err => {
@@ -42,17 +42,51 @@ router.post('/', loginRequire, (req, res) => {
 });
 
 router.get('/new', loginRequire, (req, res) => {
-    res.render('campgrounds/new')
+    res.render('campgrounds/new');
 });
 
 router.get('/:id', (req, res) => {
     // find the campground with the provided id
     Campground.findById(req.params.id).populate('comments').exec()
-        .then((foundCampground) => {
+        .then(foundCampground => {
             res.render('campgrounds/show', { campground: foundCampground });
         }).catch(err => {
             console.log(err);
         })
+});
+
+// Edit campground route
+router.get('/:id/edit', (req, res) => {
+    Campground.findById(req.params.id)
+    .then(foundCampground => {
+        res.render('campgrounds/edit', { campground: foundCampground });
+    })
+    .catch(err => {
+        console.log(err);
+    });
+});
+
+// Update campground route
+router.put('/:id', (req, res) => {
+    Campground.findByIdAndUpdate(req.params.id, req.body)
+    .then(() => {
+        res.redirect(`/campgrounds/${req.params.id}`);
+    })
+    .catch(err => {
+        console.log(err);
+    });
+});
+
+// Destroy campground route
+router.delete('/:id', (req, res) => {
+    Campground.findById(req.params.id)
+    .then(foundCampground => {
+        foundCampground.remove();
+        res.redirect('/campgrounds');
+    })
+    .catch(err => {
+        console.log(err);
+    });
 });
 
 module.exports = router;
