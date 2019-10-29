@@ -28,7 +28,7 @@ router.post('/', loginRequire, (req, res) => {
                     comment.save();
                     campground.comments.push(comment);
                     campground.save();
-                    res.redirect('/campgrounds/' + campground._id);
+                    res.redirect(`/campgrounds/${req.params.id}`);
                 }).catch(err => {
                     console.log(err);
                 });
@@ -36,5 +36,56 @@ router.post('/', loginRequire, (req, res) => {
             console.log(err);
         });
 });
+
+// Edit comments routes
+router.get('/:comment_id/edit', checkCommentOwnership, (req, res) => {
+    Comment.findById(req.params.comment_id)
+        .then(foundComment => {
+                res.render('comments/edit', { comment: foundComment, campground_id: req.params.id });
+        })
+        .catch(err => {
+            console.log(err);
+        });
+});
+
+router.put('/:comment_id', checkCommentOwnership, (req, res) => {
+    Comment.findByIdAndUpdate(req.params.comment_id, req.body)
+        .then(() => {
+            res.redirect(`/campgrounds/${req.params.id}`);
+        })
+        .catch(err => {
+            console.log(err);
+        });
+});
+
+// Destroy comments route
+router.delete('/:comment_id', checkCommentOwnership, (req, res) => {
+    Comment.findByIdAndRemove(req.params.comment_id)
+        .then(() => {
+            res.redirect(`/campgrounds/${req.params.id}`);
+        })
+        .catch(err => {
+            console.log(err);
+        });
+});
+
+function checkCommentOwnership(req, res, next) {
+    if (!req.user) {
+        return res.redirect('back');
+    }
+
+    Comment.findById(req.params.comment_id)
+        .then(foundComment => {
+            if (foundComment.author.id.equals(req.user._id)) {
+                next();
+            } else {
+                res.redirect('back');
+            }
+        })
+        .catch(err => {
+            res.redirect('back');
+            console.log(err);
+        });
+};
 
 module.exports = router;

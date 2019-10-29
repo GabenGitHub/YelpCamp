@@ -21,10 +21,12 @@
                         <em>Created by: <%= campground.author.firstName %> <%= campground.author.lastName %></em>
                         <em class="float-right"><%= campground.date %></em>
                     </p>
-                    <a class="btn btn-sm btn-warning" href="/campgrounds/<%= campground._id %>/edit">Edit</a>
-                    <form id="delete-form" action="/campgrounds/<%= campground._id %>?_method=DELETE" method="post">
-                        <button class="btn btn-sm btn-danger">Delete</button>
-                    </form>
+                    <% if(user && campground.author.id.equals(user._id)) { %>
+                        <a class="btn btn-sm btn-warning" href="/campgrounds/<%= campground._id %>/edit">Edit</a>
+                        <form class="delete-form" action="/campgrounds/<%= campground._id %>?_method=DELETE" method="post">
+                            <button class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    <% }; %>
                 </div>
             </div>
             <br>
@@ -39,6 +41,12 @@
                             <strong><%= el.author.firstName + " " + el.author.lastName %></strong>
                             <span class="float-right"><%= el.date %></span>
                             <p><%= el.text %></p>
+                            <% if(user && el.author.id.equals(user._id)) { %>
+                            <a href="/campgrounds/<%= campground._id %>/comments/<%= el._id %>/edit" class="btn btn-sm btn-warning">Edit</a>
+                            <form class="delete-form" action="/campgrounds/<%= campground._id %>/comments/<%= el._id %>?_method=DELETE" method="post">
+                                <button class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                            <% }; %>
                         </div>
                     </div>
                 <% }); %>
