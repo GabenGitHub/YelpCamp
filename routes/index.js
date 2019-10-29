@@ -57,12 +57,4 @@ router.get('/logout', (req, res) => {
     res.redirect('/');
 });
 
-function loginRequire(req, res, next) {
-    if (!req.user) {
-        return res.redirect('/login');
-    }
-
-    next();
-};
-
-module.exports = { router, loginRequire };
+module.exports = { router };
