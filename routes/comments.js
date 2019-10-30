@@ -28,6 +28,8 @@ router.post('/', middleware.loginRequire, (req, res) => {
                     comment.save();
                     campground.comments.push(comment);
                     campground.save();
+                    // Message/redirect
+                    req.flash('success', 'Comment successfully added!');
                     res.redirect(`/campgrounds/${req.params.id}`);
                 }).catch(err => {
                     console.log(err);
@@ -51,6 +53,7 @@ router.get('/:comment_id/edit', middleware.checkCommentOwnership, (req, res) => 
 router.put('/:comment_id', middleware.checkCommentOwnership, (req, res) => {
     Comment.findByIdAndUpdate(req.params.comment_id, req.body)
         .then(() => {
+            req.flash('success', 'Comment successfully edited!');
             res.redirect(`/campgrounds/${req.params.id}`);
         })
         .catch(err => {
@@ -62,6 +65,18 @@ router.put('/:comment_id', middleware.checkCommentOwnership, (req, res) => {
 router.delete('/:comment_id', middleware.checkCommentOwnership, (req, res) => {
     Comment.findByIdAndRemove(req.params.comment_id)
         .then(() => {
+            // Destroy from campground array
+            Campground.findById(req.params.id)
+                .then((foundCampground) => {
+                    const commentArray = foundCampground.comments;
+                    const commentIndex = commentArray.indexOf(req.params.comment_id);
+                    commentArray.splice(commentIndex, 1);
+                    foundCampground.save();
+                })
+                .catch(err => {
+                    console.log(err)
+                });
+            req.flash('success', 'Comment is successfully deleted!');
             res.redirect(`/campgrounds/${req.params.id}`);
         })
         .catch(err => {

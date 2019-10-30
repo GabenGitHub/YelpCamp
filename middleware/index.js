@@ -6,6 +6,7 @@ const middlewareObj = {};
 
 middlewareObj.checkCampgroundOwnership = function(req, res, next) {
     if (!req.user) {
+        req.flash('error', 'You have to be logged in to do that!');
         return res.redirect('back');
     }
 
@@ -14,17 +15,20 @@ middlewareObj.checkCampgroundOwnership = function(req, res, next) {
             if (foundCampground.author.id.equals(req.user._id)) {
                 next();
             } else {
+                req.flash('error', `You don't have permission to do that!`);
                 res.redirect('back');
             }
         })
         .catch(err => {
-            res.redirect('back');
             console.log(err);
+            req.flash('error', 'Something went wrong!');
+            res.redirect('back');
         });
 };
 
 middlewareObj.checkCommentOwnership = function(req, res, next) {
     if (!req.user) {
+        req.flash('error', 'You have to be logged in to do that!');
         return res.redirect('back');
     }
 
@@ -33,10 +37,12 @@ middlewareObj.checkCommentOwnership = function(req, res, next) {
             if (foundComment.author.id.equals(req.user._id)) {
                 next();
             } else {
+                req.flash('error', `You don't have permission to do that!`);
                 res.redirect('back');
             }
         })
         .catch(err => {
+            req.flash('error', 'Something went wrong!');
             res.redirect('back');
             console.log(err);
         });
@@ -44,6 +50,7 @@ middlewareObj.checkCommentOwnership = function(req, res, next) {
 
 middlewareObj.loginRequire = function(req, res, next) {
     if (!req.user) {
+        req.flash('error', 'You need to be logged in to do that!');
         return res.redirect('/login');
     }
 

@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const sessions = require('client-sessions');
 const methodOverride = require('method-override');
+const flash = require('connect-flash');
 const app = express();
 
 // Importing routes
@@ -28,6 +29,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/public'));
 app.use(methodOverride('_method'));
+app.use(flash());
 
 // Session
 app.use(sessions({
@@ -43,6 +45,8 @@ app.use(sessions({
 
 app.use((req, res, next) => {
     res.locals.user = req.user;
+    res.locals.error = req.flash('error');
+    res.locals.success = req.flash('success');
 
     if (!(req.session && req.session.userId)) {
         return next();

@@ -24,36 +24,39 @@ router.post('/register', (req, res) => {
     // Saving user to database
     user.save()
         .then(() => {
-            res.redirect('/');
+            req.flash('success', 'You are registered successfully!')
+            res.redirect('/campgrounds');
         })
         .catch(err => {
-            let error = 'Something bad happened!';
-
             if (err.code === 11000) {
-                error = 'That email is already taken';
+                return res.render('register', { error: 'That e-mail is already registered!' });
             }
 
-            return res.render('register', { error: error });
+            req.flash('error', 'Something went wrong!');
+            return res.redirect('/register');
         })
 });
 
 router.get('/login', (req, res) => {
-    res.render('login', { error: '' });
+    res.render('login');
 });
 
 router.post('/login', (req, res) => {
     User.findOne({ email: req.body.email }, (err, user) => {
         if (err || !user || !bcrypt.compareSync(req.body.password, user.password)) {
-            return res.render('login', { error: 'Incorrect email/password' });
+            req.flash('error', 'Incorrect e-mail or password!');
+            return res.redirect('/login');
         }
-
+        
         req.session.userId = user._id;
+        req.flash('success', `Welcome ${user.firstName}`);
         res.redirect('/campgrounds');
     });
 });
 
 router.get('/logout', (req, res) => {
     req.session.reset();
+    req.flash('success', 'You logged out successfully!');
     res.redirect('/');
 });
 
