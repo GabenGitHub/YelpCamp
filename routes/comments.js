@@ -15,28 +15,27 @@ router.get('/new', middleware.loginRequire, (req, res) => {
         });
 });
 
-router.post('/', middleware.loginRequire, (req, res) => {
-    Campground.findById(req.params.id)
-        .then((campground) => {
-            Comment.create(req.body)
-                .then(comment => {
-                    // Add first name and id to comment
-                    comment.author.firstName = req.user.firstName;
-                    comment.author.lastName = req.user.lastName;
-                    comment.author.id = req.user._id;
-                    // Save comment
-                    comment.save();
-                    campground.comments.push(comment);
-                    campground.save();
-                    // Message/redirect
-                    req.flash('success', 'Comment successfully added!');
-                    res.redirect(`/campgrounds/${req.params.id}`);
-                }).catch(err => {
-                    console.log(err);
-                });
-        }).catch(err => {
-            console.log(err);
-        });
+router.post('/', middleware.loginRequire, async (req, res) => {
+    try {
+        const foundCampground = await Campground.findById(req.params.id);
+        const comment = await Comment.create(req.body);
+        // Add first name and id to comment
+        comment.author.firstName = req.user.firstName;
+        comment.author.lastName = req.user.lastName;
+        comment.author.id = req.user._id;
+        
+        // Save comment
+        comment.save();
+        foundCampground.comments.push(comment);
+        foundCampground.save();
+
+        // Message/redirect
+        req.flash('success', 'Comment successfully added!');
+        res.redirect(`/campgrounds/${req.params.id}`);
+    }
+    catch (err) {
+        console.log(err);
+    }
 });
 
 // Edit comments routes
@@ -62,26 +61,21 @@ router.put('/:comment_id', middleware.checkCommentOwnership, (req, res) => {
 });
 
 // Destroy comments route
-router.delete('/:comment_id', middleware.checkCommentOwnership, (req, res) => {
-    Comment.findByIdAndRemove(req.params.comment_id)
-        .then(() => {
-            // Destroy from campground array
-            Campground.findById(req.params.id)
-                .then((foundCampground) => {
-                    const commentArray = foundCampground.comments;
-                    const commentIndex = commentArray.indexOf(req.params.comment_id);
-                    commentArray.splice(commentIndex, 1);
-                    foundCampground.save();
-                })
-                .catch(err => {
-                    console.log(err)
-                });
-            req.flash('success', 'Comment is successfully deleted!');
-            res.redirect(`/campgrounds/${req.params.id}`);
-        })
-        .catch(err => {
-            console.log(err);
-        });
+router.delete('/:comment_id', middleware.checkCommentOwnership, async (req, res) => {
+    try{
+        await Comment.findByIdAndRemove(req.params.comment_id);
+        // Destroy from campground array
+        const foundCampground = await Campground.findById(req.params.id);
+        const commentArray = foundCampground.comments;
+        const commentIndex = commentArray.indexOf(req.params.comment_id);
+        commentArray.splice(commentIndex, 1);
+        foundCampground.save();
+        req.flash('success', 'Comment is successfully deleted!');
+        res.redirect(`/campgrounds/${req.params.id}`);
+    }
+    catch (err) {
+        console.log(err);
+    }
 });
 
 module.exports = router;

@@ -15,10 +15,11 @@ router.get('/', (req, res) => {
 });
 
 // Save camps to database
-router.post('/', middleware.loginRequire, (req, res) => {
+router.post('/', middleware.loginRequire, async (req, res) => {
     let campName = req.body.name;
     let campImage = req.body.image;
     let campDesc = req.body.description;
+    let campPrice = req.body.price;
 
     let authorObj = {
         firstName: req.user.firstName,
@@ -30,15 +31,18 @@ router.post('/', middleware.loginRequire, (req, res) => {
         name: campName,
         image: campImage,
         description: campDesc,
+        price: campPrice,
         author: authorObj
     }
-    Campground.create(newCampground)
-        .then(campground => {
-            campground.save();
-            res.redirect('/campgrounds');
-        }).catch(err => {
-            console.log(err);
-        });
+    try{
+        const createdCampground = await Campground.create(newCampground);
+        createdCampground.save();
+        res.redirect('/campgrounds');
+    }
+    catch(err) {
+        console.log(err);
+    };
+        
 });
 
 router.get('/new', middleware.loginRequire, (req, res) => {
