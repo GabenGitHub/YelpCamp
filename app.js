@@ -4,7 +4,9 @@ const mongoose = require('mongoose');
 const sessions = require('client-sessions');
 const methodOverride = require('method-override');
 const flash = require('connect-flash');
+const dotenv = require('dotenv');
 const app = express();
+dotenv.config();
 
 // Importing routes
 const indexRoutes = require('./routes/index').router;
@@ -12,15 +14,15 @@ const campgroundRoutes = require('./routes/campgrounds');
 const commentRoutes = require('./routes/comments');
 
 // Keys
-const sessionPassword = require('./config/keys').psw;
-const database = require('./config/keys').mongoURI;
+const DB_CONNECTION = process.env.DB_CONNECTION;
+const SESSION_PSW = process.env.SESSION_PSW;
 
 // Database
 mongoose.set('useCreateIndex', true);
 mongoose.set('useFindAndModify', false);
 const User = require('./models/users');
 
-mongoose.connect(database, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(DB_CONNECTION, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('MongoDB Connected...'))
     .catch(err => console.log(err));
 
@@ -34,7 +36,7 @@ app.use(flash());
 // Session
 app.use(sessions({
     cookieName: 'session',
-    secret: sessionPassword,
+    secret: SESSION_PSW,
     duration: 10 * 60 * 1000,       // 10 mins session
     activeDuration: 10 * 60 * 1000, // Prolong 10 mins
     cookie: {
