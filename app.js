@@ -18,8 +18,6 @@ const DB_CONNECTION = process.env.DB_CONNECTION;
 const SESSION_PSW = process.env.SESSION_PSW;
 
 // Database
-mongoose.set('useCreateIndex', true);
-mongoose.set('useFindAndModify', false);
 const User = require('./models/users');
 
 mongoose.connect(DB_CONNECTION, { useNewUrlParser: true, useUnifiedTopology: true })
